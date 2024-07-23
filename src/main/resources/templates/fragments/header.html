@@ -1,0 +1,16 @@
+<header xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <script type="text/javascript" th:src="@{/js/header.js}"></script>
+    <nav sec:authorize="!isAuthenticated()">
+        Login with GitHub: <a href="/oauth2/authorization/github">click here</a>
+    </nav>
+    <nav sec:authorize="isAuthenticated()">
+        Logged in as: <span id="user"></span> (<span sec:authentication="name"></span>)
+        <div>
+            <form th:action="@{/logout}" method="post">
+                <div><input type="submit" value="Log Out" class="btn btn-primary"/></div>
+            </form>
+<!--            <button th:onclick="logout()" id="logout-btn" class="btn btn-primary">Logout</button>-->
+        </div>
+    </nav>
+    <hr/>
+</header>
