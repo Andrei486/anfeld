@@ -24,7 +24,7 @@ public class UserController {
     }
 
     @GetMapping("/logout")
-    public String showRegistrationForm() {
+    public String logout() {
         return "redirect:/";
     }
 }

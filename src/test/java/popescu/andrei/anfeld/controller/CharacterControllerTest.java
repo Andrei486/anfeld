@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,54 +15,45 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import popescu.andrei.anfeld.repository.WildcardCharacterRepository;
 
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oauth2Login;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.xpath;
 
 @ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class UserControllerTest {
+public class CharacterControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    /**
-     * Tests that the /user endpoint correctly returns user information when a user is logged in.
-     * @throws Exception if the endpoint can't be accessed at all
-     */
+    @Mock
+    private WildcardCharacterRepository characterRepository;
+
     @Test
     @DirtiesContext
-    public void testGetUser() throws Exception {
+    public void testCreateCharacterForm() throws Exception {
         // the name of the default user is "user"
         // set the name attribute (display name) manually
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/user")
+        mockMvc.perform(MockMvcRequestBuilders.get("/createCharacterForm")
                         .with(csrf())
                         .with(oauth2Login().attributes(attr -> attr.put("name", "displayName")))
-                        .accept(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.TEXT_HTML))
                 .andExpect(status().is2xxSuccessful())
-                .andReturn();
-        // check that the response is correct
-        var objectMapper = new ObjectMapper();
-        var response = result.getResponse().getContentAsString();
-        Map<String, Object> map = objectMapper.readValue(response, new TypeReference<>() {});
-        assertEquals("displayName", map.get("name"));
-        assertEquals("user", map.get("id"));
+                .andExpect(xpath("//input[@id=\"characterName\"]").exists());
     }
 
-    /**
-     * Tests that the /user endpoint returns an unauthorized error code when a user that isn't logged in accesses it.
-     * @throws Exception if the endpoint can't be accessed at all
-     */
     @Test
     @DirtiesContext
-    public void testGetUserNotLoggedInUnauthorized() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/user")
+    public void testCreateCharacterFormNotLoggedInUnauthorized() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/createCharacterForm")
                         .with(csrf()))
                 .andExpect(status().isUnauthorized());
     }
