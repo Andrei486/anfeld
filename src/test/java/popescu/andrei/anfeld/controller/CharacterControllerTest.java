@@ -1,10 +1,8 @@
 package popescu.andrei.anfeld.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -13,8 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import popescu.andrei.anfeld.model.WildcardCharacter;
 import popescu.andrei.anfeld.repository.WildcardCharacterRepository;
 
 import java.util.Map;
@@ -22,8 +20,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oauth2Login;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.xpath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
 @ExtendWith(MockitoExtension.class)
@@ -31,11 +28,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class CharacterControllerTest {
 
+    private static final String DEFAULT_USER_ID = "user"; // as defined by the oauthlogin test user
+
     @Autowired
     private MockMvc mockMvc;
 
-    @Mock
+    @Autowired
     private WildcardCharacterRepository characterRepository;
+
+    @BeforeEach
+    public void setup() {
+        characterRepository.deleteAll();
+    }
 
     @Test
     @DirtiesContext
@@ -54,6 +58,36 @@ public class CharacterControllerTest {
     @DirtiesContext
     public void testCreateCharacterFormNotLoggedInUnauthorized() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/createCharacterForm")
+                        .with(csrf()))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @DirtiesContext
+    public void testCreateCharacter() throws Exception {
+        final String characterName = "testCharacterName";
+        var character = new WildcardCharacter();
+        character.setCharacterName(characterName);
+        mockMvc.perform(MockMvcRequestBuilders.post("/createCharacter")
+                        .flashAttr("character", character)
+                        .with(csrf())
+                        .with(oauth2Login().attributes(attr -> attr.put("name", "displayName"))))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/")); // test redirect to index, this may change
+        // confirm character was created with correct ID
+        var addedCharacter = characterRepository.findCharacterById(character.getId());
+        assertEquals(DEFAULT_USER_ID, addedCharacter.getOwnerId());
+        assertEquals(characterName, addedCharacter.getCharacterName());
+    }
+
+    @Test
+    @DirtiesContext
+    public void testCreateCharacterNotLoggedInUnauthorized() throws Exception {
+        final String characterName = "testCharacterName";
+        var character = new WildcardCharacter();
+        character.setCharacterName(characterName);
+        mockMvc.perform(MockMvcRequestBuilders.post("/createCharacter")
+                        .flashAttr("character", character)
                         .with(csrf()))
                 .andExpect(status().isUnauthorized());
     }
