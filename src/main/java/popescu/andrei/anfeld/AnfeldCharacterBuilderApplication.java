@@ -9,5 +9,4 @@ public class AnfeldCharacterBuilderApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(AnfeldCharacterBuilderApplication.class, args);
 	}
-
 }

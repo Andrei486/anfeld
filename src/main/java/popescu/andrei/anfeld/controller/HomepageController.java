@@ -1,4 +1,4 @@
-package popescu.andrei.anfeld;
+package popescu.andrei.anfeld.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
