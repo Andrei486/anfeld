@@ -53,7 +53,7 @@ public class CharacterViewControllerTest {
     @Test
     @DirtiesContext
     public void testGetCharactersForUser() throws Exception {
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/characters/" + DEFAULT_USER_ID)
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/characters/" + DEFAULT_USER_ID)
                         .with(csrf())
                         .with(oauth2Login().attributes(attr -> attr.put("name", "displayName"))))
                 .andExpect(status().is2xxSuccessful())
@@ -70,7 +70,7 @@ public class CharacterViewControllerTest {
     @Test
     @DirtiesContext
     public void testGetCharacterWithoutUserUnauthorized() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/characters/user")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/characters/user")
                         .with(csrf()))
                 .andExpect(status().isUnauthorized());
     }
@@ -78,7 +78,7 @@ public class CharacterViewControllerTest {
     @Test
     @DirtiesContext
     public void testGetCharacterForOtherUserEmpty() throws Exception {
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/characters/" + DEFAULT_USER_ID + "1")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/characters/" + DEFAULT_USER_ID + "1")
                         .with(csrf())
                         .with(oauth2Login().attributes(attr -> attr.put("name", "displayName"))))
                 .andExpect(status().is2xxSuccessful())

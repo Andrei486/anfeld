@@ -21,7 +21,7 @@ public class CharacterManagementController {
         return "createCharacter";
     }
 
-    @PostMapping("/createCharacter")
+    @PostMapping("/api/createCharacter")
     public String createCharacter(
             @ModelAttribute("character") WildcardCharacter character,
             @AuthenticationPrincipal OAuth2User principal) {

@@ -66,7 +66,7 @@ public class CharacterManagementControllerTest {
         final String characterName = "testCharacterName";
         var character = new WildcardCharacter();
         character.setCharacterName(characterName);
-        mockMvc.perform(MockMvcRequestBuilders.post("/createCharacter")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/createCharacter")
                         .flashAttr("character", character)
                         .with(csrf())
                         .with(oauth2Login().attributes(attr -> attr.put("name", "displayName"))))
@@ -84,7 +84,7 @@ public class CharacterManagementControllerTest {
         final String characterName = "testCharacterName";
         var character = new WildcardCharacter();
         character.setCharacterName(characterName);
-        mockMvc.perform(MockMvcRequestBuilders.post("/createCharacter")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/createCharacter")
                         .flashAttr("character", character)
                         .with(csrf()))
                 .andExpect(status().isUnauthorized());
