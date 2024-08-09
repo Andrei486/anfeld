@@ -15,8 +15,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import popescu.andrei.anfeld.model.WildcardCharacter;
 import popescu.andrei.anfeld.repository.WildcardCharacterRepository;
 
-import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oauth2Login;
@@ -26,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class CharacterControllerTest {
+public class CharacterManagementControllerTest {
 
     private static final String DEFAULT_USER_ID = "user"; // as defined by the oauthlogin test user
 
