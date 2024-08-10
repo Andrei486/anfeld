@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    $.get("/user", function(data) {
+    $.get("/api/user", function(data) {
         $("#user").text(data.name); // populate username in navbar
     });
 });

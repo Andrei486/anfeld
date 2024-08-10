@@ -13,7 +13,7 @@ import java.util.Map;
 @RestController
 public class UserController {
 
-    @GetMapping("/user")
+    @GetMapping("/api/user")
     @ResponseBody
     public Map<String, Object> user(@AuthenticationPrincipal OAuth2User principal) {
         // getAttribute("name") gets the name from GitHub, as opposed to getName() which gets a number

@@ -20,7 +20,7 @@ public class CharacterViewController {
     @Autowired
     WildcardCharacterRepository characterRepository;
 
-    @GetMapping("characters/{ownerId}")
+    @GetMapping("/api/characters/{ownerId}")
     @ResponseBody
     public List<WildcardCharacter> getCharactersForOwner(
             Model model,
@@ -32,7 +32,7 @@ public class CharacterViewController {
         return characterRepository.findCharactersByOwnerId(ownerId);
     }
 
-    @GetMapping("characterList")
+    @GetMapping("/characterList")
     public String viewCharacters(
             Model model,
             @AuthenticationPrincipal OAuth2User principal) {

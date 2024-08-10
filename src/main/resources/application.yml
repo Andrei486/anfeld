@@ -8,3 +8,7 @@ spring:
           github:
             clientId: Ov23lix9FI1R9LQaD8WJ
             clientSecret: f8564256351d9a65cc03cb216df933364e0deaea
+server:
+  error:
+    whitelabel:
+      enabled: false # disable the Whitelabel error page to use a custom one

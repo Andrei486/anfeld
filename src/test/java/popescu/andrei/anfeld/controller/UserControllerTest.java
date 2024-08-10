@@ -39,7 +39,7 @@ public class UserControllerTest {
     public void testGetUser() throws Exception {
         // the name of the default user is "user"
         // set the name attribute (display name) manually
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/user")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/user")
                         .with(csrf())
                         .with(oauth2Login().attributes(attr -> attr.put("name", "displayName")))
                         .accept(MediaType.APPLICATION_JSON))
@@ -60,7 +60,7 @@ public class UserControllerTest {
     @Test
     @DirtiesContext
     public void testGetUserNotLoggedInUnauthorized() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/user")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/user")
                         .with(csrf()))
                 .andExpect(status().isUnauthorized());
     }
